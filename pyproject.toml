@@ -1,0 +1,23 @@
+[project]
+name = "fractal-backend"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi[standard]>=0.141.1",
+    "numpy>=2.5.2",
+    "pillow>=12.3.0",
+    "uvicorn>=0.52.4",
+]
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "W", "I"]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.5",
+]
+
