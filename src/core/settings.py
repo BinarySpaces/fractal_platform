@@ -10,9 +10,9 @@ class Settings(BaseSettings):
     )
 
     database_url: str
-    redis_url: str = 'redis://localhost:6379'
-    free_daily_limit: int = 3
-    premium_daily_limit: int = 10
+    redis_url: str
+    free_daily_limit: int
+    premium_daily_limit: int
 
     fractal_weights: tuple[int, ...]
     scheme_weights: tuple[int, ...]

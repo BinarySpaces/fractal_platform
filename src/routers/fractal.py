@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.db import get_session
 from src.models import BaseParams
 from src.services import (
+    check_quota,
     create_one,
     delete_one,
     generate_random_fractal,
@@ -27,6 +28,7 @@ def _serialize(fractal) -> dict:
 @router.post('/generate')
 async def create_fractal(
     params: BaseParams,
+    _: None = Depends(check_quota),
     session: AsyncSession = Depends(get_session),
 ) -> dict:
     # 1. генерация PNG
