@@ -1,0 +1,27 @@
+body {
+    font-family: sans-serif;
+    background: #111;
+    color: #eee;
+    text-align: center;
+    padding: 40px;
+}
+
+img {
+    max-width: 500px;
+    border: 2px solid #444;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+button {
+    padding: 12px 24px;
+    font-size: 16px;
+    background: #4a9eff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button:hover { background: #3588e0; }
+button:disabled { background: #555; cursor: wait; }

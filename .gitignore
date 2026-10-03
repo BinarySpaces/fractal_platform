@@ -28,6 +28,12 @@ __pycache__/
 *.swp
 *.swo
 
+# Generated
+generation_service/static/*.png
+
+# Docker
+postgres_data/
+
 # Логи и временные файлы
 *.log
 .DS_Store
