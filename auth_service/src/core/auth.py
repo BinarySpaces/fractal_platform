@@ -1,34 +1,32 @@
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 
 from src.core.config import settings
 
 
-async def get_current_user(
-        token: str = Depends(OAuth2PasswordBearer(tokenUrl='http://localhost:8001/auth/login'))
-    )-> dict:
+async def get_current_user_id(
+        token: str = Depends(OAuth2PasswordBearer(tokenUrl='/auth/login'))
+    ) -> int:
     try:
         payload = jwt.decode(
             token,
             settings.secret_key,
-            algorithms=[settings.algorithm]
+            algorithms=[settings.algorithm],
         )
     except JWTError:
         raise HTTPException(
-            status_code=401,
+            status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Invalid or expired token',
             headers={'WWW-Authenticate': 'Bearer'},
         )
+
     user_id = payload.get('user_id')
     if not isinstance(user_id, int):
         raise HTTPException(
-            status_code=401,
-            detail='Invalid token payload',
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='user_id not found in token',
             headers={'WWW-Authenticate': 'Bearer'},
         )
 
-    return {
-        'user_id': user_id,
-        'is_premium': payload.get('is_premium')
-    }
+    return user_id

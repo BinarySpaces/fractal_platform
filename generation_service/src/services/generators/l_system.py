@@ -2,9 +2,8 @@ import asyncio
 import math
 import random
 
+from generation_service.src.schemas.requests import LSystemParams
 from PIL import Image, ImageDraw
-
-from src.models import LSystemParams
 
 
 async def generate_l_system(params: LSystemParams) -> str:

@@ -1,5 +1,5 @@
 [project]
-name = "fractal-backend"
+name = "generation-service"
 version = "0.1.0"
 requires-python = ">=3.14"
 dependencies = [
@@ -9,6 +9,7 @@ dependencies = [
     "numpy>=2.5.2",
     "pillow>=12.3.0",
     "psycopg[binary,pool]>=3.3.6",
+    "python-jose[cryptography]>=3.5.0",
     "redis>=8.1.0",
     "sqlalchemy[asyncio]>=2.0.54",
     "uvicorn>=0.52.4",

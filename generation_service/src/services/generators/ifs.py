@@ -3,7 +3,7 @@ import random
 
 from PIL import Image, ImageDraw
 
-from src.models import IFSParams
+from src.schemas.requests import IFSParams
 
 
 async def generate_ifs(params: IFSParams) -> str:

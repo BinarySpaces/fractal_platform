@@ -2,9 +2,9 @@ import asyncio
 import random
 
 import numpy as np
+from generation_service.src.schemas.requests import MandelbrotParams
 from PIL import Image
 
-from src.models import MandelbrotParams
 from src.services.utils import get_color
 
 

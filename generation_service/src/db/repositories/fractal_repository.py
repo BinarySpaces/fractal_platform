@@ -9,6 +9,7 @@ async def add(fractal: Fractal, session: AsyncSession) -> Fractal:
     await session.flush()
     return fractal
 
+
 async def get_by_id(
         fractal_id: int,
         user_id: int,
@@ -22,6 +23,7 @@ async def get_by_id(
     )
     return result.scalar_one_or_none()
 
+
 async def list_by_user(
         user_id: int,
         session: AsyncSession,
@@ -34,6 +36,7 @@ async def list_by_user(
         .limit(limit)
     )
     return list(result.scalars().all())
+
 
 async def delete(fractal: Fractal, session: AsyncSession) -> None:
     await session.delete(fractal)

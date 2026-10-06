@@ -39,6 +39,3 @@ postgres_data/
 .DS_Store
 *.db
 *.sqlite3
-
-# Файлы блокировки (зависимости уже описаны в pyproject.toml)
-uv.lock

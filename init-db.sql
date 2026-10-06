@@ -1,0 +1,2 @@
+CREATE DATABASE fractals;
+CREATE DATABASE auth;

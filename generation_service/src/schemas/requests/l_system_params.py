@@ -1,4 +1,4 @@
-from src.models.base_params import BaseParams
+from src.schemas.requests.base_params import BaseParams
 
 
 class LSystemParams(BaseParams):

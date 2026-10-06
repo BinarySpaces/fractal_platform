@@ -1,86 +1,58 @@
-import random
+from pathlib import Path
 
-from src.core import settings
-from src.models import (
-    BaseParams,
-    IFSParams,
-    JuliaParams,
-    LSystemParams,
-    MandelbrotParams,
-)
-from src.services.fractal_factory import get_generator
-from src.services.presets import IFS_PRESETS, L_SYSTEM_PRESETS
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from src.db.models import Fractal
+from src.db.repositories import add, delete, get_by_id, list_by_user
 
 
-async def generate_random_fractal(params: BaseParams) -> dict:
+async def create_one(
+    user_id: int,
+    fractal_name: str,
+    scheme: str | None,
+    image_url: str,
+    session: AsyncSession,
+) -> Fractal:
+    fractal = Fractal(
+        user_id=user_id,
+        fractal_name=fractal_name,
+        scheme=scheme,
+        image_url=image_url,
+    )
+    fractal = await add(fractal, session)
+    await session.commit()
+    await session.refresh(fractal)
+    return fractal
 
-    params_dict = params.model_dump()
 
-    formula = random.choices(
-        ['mandelbrot', 'julia', 'ifs', 'l_system'],
-        weights=settings.fractal_weights,
-        k=1,
-    )[0]
+async def get_one(
+    fractal_id: int,
+    user_id: int,
+    session: AsyncSession,
+) -> Fractal | None:
+    return await get_by_id(fractal_id, user_id, session)
 
-    match formula:
 
-        case 'mandelbrot':
-            params_dict['scheme'] = random.choices(
-                ('cold', 'hot', 'forest', 'clarity'),
-                weights=settings.scheme_weights,
-                k=1,
-            )[0]
-            fractal_name = 'Mandelbrot'
-            scheme = params_dict['scheme']
+async def list_fractals(
+    user_id: int,
+    session: AsyncSession,
+) -> list[Fractal]:
+    return await list_by_user(user_id, session)
 
-            typed_params = MandelbrotParams(**params_dict)
 
-        case 'julia':
-            params_dict['scheme'] = random.choices(
-                ('cold', 'hot', 'forest', 'clarity'),
-                weights=settings.scheme_weights,
-                k=1,
-            )[0]
-            fractal_name = 'Julia'
-            scheme = params_dict['scheme']
+async def delete_one(
+    fractal_id: int,
+    user_id: int,
+    session: AsyncSession,
+) -> bool:
+    fractal = await get_by_id(fractal_id, user_id, session)
+    if fractal is None:
+        return False
 
-            params_dict['c_real'] = random.uniform(-2.0, 2.0)
-            params_dict['c_imag'] = random.uniform(-2.0, 2.0)
-            params_dict['power'] = random.choices([2, 3, 4], weights=[3, 1, 1])[0]
+    Path(fractal.image_url.lstrip('/')).unlink(missing_ok=True)
 
-            typed_params = JuliaParams(**params_dict)
+    # s3_client.delete_object(Bucket=BUCKET, Key=fractal.image_url.lstrip('/'))
 
-        case 'ifs':
-            preset_name = random.choices(
-                tuple(IFS_PRESETS.keys()),
-                weights=settings.ifs_presets_weights,
-                k=1
-            )[0]
-            fractal_name = preset_name
-            scheme = None
-
-            params_dict['preset_name'] = preset_name
-            params_dict['preset_transforms'] = IFS_PRESETS[preset_name]
-            params_dict['iterations'] = random.randint(50000, 200000)
-
-            typed_params = IFSParams(**params_dict)
-
-        case _:
-            preset_name = random.choices(
-                tuple(L_SYSTEM_PRESETS.keys()),
-                weights=tuple(settings.l_system_presets_weights),
-                k=1,
-            )[0]
-            fractal_name = preset_name
-            scheme = None
-
-            params_dict['preset_name'] = preset_name
-            params_dict.update(L_SYSTEM_PRESETS[preset_name])
-
-            typed_params = LSystemParams(**params_dict)
-
-    return {
-        'image_url': await get_generator(formula)(typed_params),
-        'fractal_name': fractal_name,
-        'scheme': scheme,
-    }
+    await delete(fractal, session)
+    await session.commit()
+    return True

@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     free_daily_limit: int
     premium_daily_limit: int
 
+    secret_key: str
+    algorithm: str
+
     fractal_weights: tuple[int, ...]
     scheme_weights: tuple[int, ...]
     ifs_presets_weights: tuple[int, ...]
